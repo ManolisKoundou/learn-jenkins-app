@@ -24,7 +24,7 @@ pipeline {
         }
         */
 
-        stage('Test') {
+        /*stage('Test') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -39,6 +39,7 @@ pipeline {
                 '''
             }
         }
+        */
 
         stage('E2E') {
             agent {
@@ -50,8 +51,9 @@ pipeline {
 
             steps {
                 sh '''
-                    #test -f build/index.html
-                    npm test
+                    npm install -g serve
+                    serve -s build
+                    npx playwright test
                 '''
             }
         }
