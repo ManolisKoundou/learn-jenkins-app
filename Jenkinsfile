@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     stages {
+        /*
+
         stage('Build') {
             agent {
                 docker {
@@ -20,22 +22,28 @@ pipeline {
                 '''
             }
         }
+        */
 
-        stage('Test'){
-            steps{
-                sh '''
-
-                    echo "Test stage"
-                    
-                    if [ -f build/index.html ]; then
-                        echo "File exists"
-                    else
-                        echo "File does not exist"
-                    fi
-
-
-                 '''
+        stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
             }
+
+            steps {
+                sh '''
+                    #test -f build/index.html
+                    npm test
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'test-results/junit.xml'
         }
     }
 }
